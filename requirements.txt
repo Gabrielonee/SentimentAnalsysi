@@ -1,0 +1,36 @@
+# Sentiment & Network Analysis - AC Milan (era RedBird)
+# Dipendenze Python (testato con 3.10+)
+
+# Data
+pandas>=2.0
+pyarrow>=14.0
+numpy>=1.24
+
+# Reddit scraping via Arctic Shift (HTTP, no auth)
+requests>=2.31
+
+# Preprocessing & NLP
+spacy>=3.7
+langdetect>=1.0.9
+rapidfuzz>=3.5
+
+# Sentiment
+transformers>=4.40
+torch>=2.0
+sentencepiece>=0.2.0   # tokenizer richiesto da XLM-RoBERTa / DeBERTa-v3
+sacremoses>=0.1        # richiesto da Helsinki-NLP/opus-mt-it-en
+nltk>=3.8
+
+# Network analysis
+networkx>=3.2
+
+# Stats
+scipy>=1.11
+statsmodels>=0.14
+
+# Dashboard
+streamlit>=1.32
+plotly>=5.18
+
+# Util
+tqdm>=4.66

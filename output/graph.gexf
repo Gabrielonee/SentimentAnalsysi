@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='utf-8'?>
+<gexf xmlns="http://www.gexf.net/1.2draft" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd" version="1.2">
+  <meta lastmodifieddate="2026-06-04">
+    <creator>NetworkX 3.6.1</creator>
+  </meta>
+  <graph defaultedgetype="undirected" mode="static" name="">
+    <attributes mode="static" class="node">
+      <attribute id="0" title="role" type="string" />
+      <attribute id="1" title="mentions" type="long" />
+    </attributes>
+    <nodes>
+      <node id="ibrahimovic" label="Zlatan Ibrahimović">
+        <attvalues>
+          <attvalue for="0" value="Operating Partner / Senior Advisor" />
+          <attvalue for="1" value="21241" />
+        </attvalues>
+      </node>
+      <node id="maldini" label="Paolo Maldini">
+        <attvalues>
+          <attvalue for="0" value="Direttore Tecnico" />
+          <attvalue for="1" value="25291" />
+        </attvalues>
+      </node>
+      <node id="massara" label="Frederic Massara">
+        <attvalues>
+          <attvalue for="0" value="Direttore Sportivo" />
+          <attvalue for="1" value="2075" />
+        </attvalues>
+      </node>
+      <node id="cardinale" label="Gerry Cardinale">
+        <attvalues>
+          <attvalue for="0" value="Founder RedBird Capital / Owner" />
+          <attvalue for="1" value="12752" />
+        </attvalues>
+      </node>
+      <node id="gazidis" label="Ivan Gazidis">
+        <attvalues>
+          <attvalue for="0" value="CEO uscente" />
+          <attvalue for="1" value="1000" />
+        </attvalues>
+      </node>
+      <node id="moncada" label="Geoffrey Moncada">
+        <attvalues>
+          <attvalue for="0" value="Direttore Tecnico / Head of Scouting" />
+          <attvalue for="1" value="4580" />
+        </attvalues>
+      </node>
+      <node id="furlani" label="Giorgio Furlani">
+        <attvalues>
+          <attvalue for="0" value="CEO" />
+          <attvalue for="1" value="8222" />
+        </attvalues>
+      </node>
+    </nodes>
+    <edges>
+      <edge source="ibrahimovic" target="maldini" id="0" weight="918" />
+      <edge source="ibrahimovic" target="gazidis" id="1" weight="29" />
+      <edge source="ibrahimovic" target="cardinale" id="2" weight="592" />
+      <edge source="ibrahimovic" target="massara" id="3" weight="69" />
+      <edge source="ibrahimovic" target="moncada" id="4" weight="570" />
+      <edge source="ibrahimovic" target="furlani" id="5" weight="802" />
+      <edge source="maldini" target="massara" id="6" weight="1704" />
+      <edge source="maldini" target="gazidis" id="7" weight="279" />
+      <edge source="maldini" target="moncada" id="8" weight="552" />
+      <edge source="maldini" target="cardinale" id="9" weight="1108" />
+      <edge source="maldini" target="furlani" id="10" weight="655" />
+      <edge source="massara" target="gazidis" id="11" weight="106" />
+      <edge source="massara" target="moncada" id="12" weight="204" />
+      <edge source="massara" target="furlani" id="13" weight="106" />
+      <edge source="massara" target="cardinale" id="14" weight="131" />
+      <edge source="cardinale" target="gazidis" id="15" weight="62" />
+      <edge source="cardinale" target="furlani" id="16" weight="881" />
+      <edge source="cardinale" target="moncada" id="17" weight="226" />
+      <edge source="gazidis" target="moncada" id="18" weight="51" />
+      <edge source="gazidis" target="furlani" id="19" weight="138" />
+      <edge source="moncada" target="furlani" id="20" weight="1217" />
+    </edges>
+  </graph>
+</gexf>

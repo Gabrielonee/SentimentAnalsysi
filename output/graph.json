@@ -1,0 +1,181 @@
+{
+  "nodes": [
+    {
+      "id": "ibrahimovic",
+      "label": "Zlatan Ibrahimović",
+      "role": "Operating Partner / Senior Advisor",
+      "mentions": 21241,
+      "degree": 1.0,
+      "betweenness": 0.2,
+      "eigenvector": 0.37753503099737584,
+      "community": 0
+    },
+    {
+      "id": "maldini",
+      "label": "Paolo Maldini",
+      "role": "Direttore Tecnico",
+      "mentions": 25291,
+      "degree": 1.0,
+      "betweenness": 0.0,
+      "eigenvector": 0.5358904638630935,
+      "community": 1
+    },
+    {
+      "id": "massara",
+      "label": "Frederic Massara",
+      "role": "Direttore Sportivo",
+      "mentions": 2075,
+      "degree": 1.0,
+      "betweenness": 0.0,
+      "eigenvector": 0.3266964418296648,
+      "community": 1
+    },
+    {
+      "id": "cardinale",
+      "label": "Gerry Cardinale",
+      "role": "Founder RedBird Capital / Owner",
+      "mentions": 12752,
+      "degree": 1.0,
+      "betweenness": 0.0,
+      "eigenvector": 0.3872147464004677,
+      "community": 0
+    },
+    {
+      "id": "gazidis",
+      "label": "Ivan Gazidis",
+      "role": "CEO uscente",
+      "mentions": 1000,
+      "degree": 1.0,
+      "betweenness": 0.8,
+      "eigenvector": 0.08670545808819978,
+      "community": 1
+    },
+    {
+      "id": "moncada",
+      "label": "Geoffrey Moncada",
+      "role": "Direttore Tecnico / Head of Scouting",
+      "mentions": 4580,
+      "degree": 1.0,
+      "betweenness": 0.0,
+      "eigenvector": 0.34900985507448073,
+      "community": 0
+    },
+    {
+      "id": "furlani",
+      "label": "Giorgio Furlani",
+      "role": "CEO",
+      "mentions": 8222,
+      "degree": 1.0,
+      "betweenness": 0.0,
+      "eigenvector": 0.42929846351329065,
+      "community": 0
+    }
+  ],
+  "edges": [
+    {
+      "source": "ibrahimovic",
+      "target": "maldini",
+      "weight": 918
+    },
+    {
+      "source": "ibrahimovic",
+      "target": "gazidis",
+      "weight": 29
+    },
+    {
+      "source": "ibrahimovic",
+      "target": "cardinale",
+      "weight": 592
+    },
+    {
+      "source": "ibrahimovic",
+      "target": "massara",
+      "weight": 69
+    },
+    {
+      "source": "ibrahimovic",
+      "target": "moncada",
+      "weight": 570
+    },
+    {
+      "source": "ibrahimovic",
+      "target": "furlani",
+      "weight": 802
+    },
+    {
+      "source": "maldini",
+      "target": "massara",
+      "weight": 1704
+    },
+    {
+      "source": "maldini",
+      "target": "gazidis",
+      "weight": 279
+    },
+    {
+      "source": "maldini",
+      "target": "moncada",
+      "weight": 552
+    },
+    {
+      "source": "maldini",
+      "target": "cardinale",
+      "weight": 1108
+    },
+    {
+      "source": "maldini",
+      "target": "furlani",
+      "weight": 655
+    },
+    {
+      "source": "massara",
+      "target": "gazidis",
+      "weight": 106
+    },
+    {
+      "source": "massara",
+      "target": "moncada",
+      "weight": 204
+    },
+    {
+      "source": "massara",
+      "target": "furlani",
+      "weight": 106
+    },
+    {
+      "source": "massara",
+      "target": "cardinale",
+      "weight": 131
+    },
+    {
+      "source": "cardinale",
+      "target": "gazidis",
+      "weight": 62
+    },
+    {
+      "source": "cardinale",
+      "target": "furlani",
+      "weight": 881
+    },
+    {
+      "source": "cardinale",
+      "target": "moncada",
+      "weight": 226
+    },
+    {
+      "source": "gazidis",
+      "target": "moncada",
+      "weight": 51
+    },
+    {
+      "source": "gazidis",
+      "target": "furlani",
+      "weight": 138
+    },
+    {
+      "source": "moncada",
+      "target": "furlani",
+      "weight": 1217
+    }
+  ]
+}
