@@ -3,17 +3,13 @@
 Sentiment and network analysis of AC Milan's executives during the RedBird
 Capital ownership era (August 2022 – present). Data comes from the r/ACMilan
 subreddit (posts + comments, Italian and English), collected through
-**Arctic Shift** (a community-maintained mirror of the former Pushshift, with
-public HTTP access and no credentials required). The final output is an
+**Arctic Shift** . The final output is an
 interactive dashboard with sentiment over time, an executive co-mention graph,
 and correlation with Serie A results.
 
-> Author: **Gabriele Soranno** — University of Milano-Bicocca
-
 ## Repository structure
-
 ```
-SentimentAnalsysi/
+SentimentAnalysis/
 ├── README.md
 ├── requirements.txt
 ├── data/
@@ -35,10 +31,6 @@ SentimentAnalsysi/
     └── dashboard.py
 ```
 
-The `data/` directory and the model weights are not versioned (they are large
-and reproducible). Datasets are listed in `.gitignore`; only `data/matches.csv`
-is tracked. The `output/` directory keeps the explainability reports.
-
 ## Installation
 
 ```bash
@@ -48,8 +40,6 @@ python -m spacy download it_core_news_sm
 python -m spacy download en_core_web_sm
 ```
 
-No Reddit credentials are required: data collection goes through the public
-Arctic Shift service over HTTP.
 
 ## Full pipeline (Arctic Shift)
 
