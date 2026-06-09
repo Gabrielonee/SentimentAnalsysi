@@ -14,7 +14,7 @@ START_DATE = datetime(2022, 8, 1, tzinfo=timezone.utc)   # acquisizione RedBird
 END_DATE   = datetime.now(tz=timezone.utc)
 
 SENTIMENT_MODEL = "cardiffnlp/twitter-xlm-roberta-base-sentiment"
-SPACY_IT = "it_core_news_sm"   # ridotto in dev; usare _lg in produzione
+SPACY_IT = "it_core_news_sm" 
 SPACY_EN = "en_core_web_sm"
 
 @dataclass
