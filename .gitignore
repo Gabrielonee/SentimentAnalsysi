@@ -17,3 +17,6 @@ data/clean_text.parquet
 # Output di sviluppo
 .ipynb_checkpoints/
 *.log
+
+# Dataset (troppo grandi per GitHub: rigenerabili dalla pipeline)
+data/*.parquet

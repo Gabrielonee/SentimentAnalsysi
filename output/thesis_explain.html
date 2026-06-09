@@ -1,0 +1,95 @@
+<!DOCTYPE html><html><head><meta charset='utf-8'>
+<title>Explainability Vanilla vs ABSA</title></head><body>
+<h1 style='font-family:sans-serif;'>Integrated Gradients — Vanilla vs ABSA</h1>
+<p style='font-family:sans-serif;color:#555;max-width:800px;'>Token <span style='background:rgba(31,119,180,0.6);padding:1px 4px;'>blu</span> spingono la predizione verso <b>positivo</b>; token <span style='background:rgba(214,39,40,0.6);padding:1px 4px;'>rossi</span> verso <b>negativo</b>. Intensità del colore proporzionale a |attribuzione|.</p>
+<hr><h2 style='font-family:sans-serif;'>Esempio 1</h2>
+<p style='font-family:sans-serif;'><b>Aspect:</b> <code>Maldini</code></p>
+<p style='font-family:sans-serif;'><i>Can we have Maldini back please 😭 Instead of those bunch of clowns</i></p>
+<p>Vanilla error: No module named &#x27;captum&#x27;</p>
+<p>ABSA error: No module named &#x27;captum&#x27;</p>
+<hr><h2 style='font-family:sans-serif;'>Esempio 2</h2>
+<p style='font-family:sans-serif;'><b>Aspect:</b> <code>Maldini</code></p>
+<p style='font-family:sans-serif;'><i>Maldini has been incredible for us, but we have to criticise where correct, last summer he was not good, compared to his usual standards.</i></p>
+<p>Vanilla error: No module named &#x27;captum&#x27;</p>
+<p>ABSA error: No module named &#x27;captum&#x27;</p>
+<hr><h2 style='font-family:sans-serif;'>Esempio 3</h2>
+<p style='font-family:sans-serif;'><b>Aspect:</b> <code>Maldini</code></p>
+<p style='font-family:sans-serif;'><i>Elliot cared about the club you clown that’s why he kept maldini instead of hiring ragnick.</i></p>
+<p>Vanilla error: No module named &#x27;captum&#x27;</p>
+<p>ABSA error: No module named &#x27;captum&#x27;</p>
+<hr><h2 style='font-family:sans-serif;'>Esempio 4</h2>
+<p style='font-family:sans-serif;'><b>Aspect:</b> <code>Maldini</code></p>
+<p style='font-family:sans-serif;'><i>I know maldini has taken this team out of a dark era, but if the plan is to make the jump to the next level, then no, salad is not good enough.</i></p>
+<p>Vanilla error: No module named &#x27;captum&#x27;</p>
+<p>ABSA error: No module named &#x27;captum&#x27;</p>
+<hr><h2 style='font-family:sans-serif;'>Esempio 5</h2>
+<p style='font-family:sans-serif;'><b>Aspect:</b> <code>Maldini</code></p>
+<p style='font-family:sans-serif;'><i>Well said buddy, step by step will be on top again, not by sacking a coach who already established a good relationship with the players, im honestly just mad that Maldini is not there anymore</i></p>
+<p>Vanilla error: No module named &#x27;captum&#x27;</p>
+<p>ABSA error: No module named &#x27;captum&#x27;</p>
+<hr><h2 style='font-family:sans-serif;'>Esempio 6</h2>
+<p style='font-family:sans-serif;'><b>Aspect:</b> <code>Maldini</code></p>
+<p style='font-family:sans-serif;'><i>Bring back Maldini we’ve gone downhill since he left and we lost our soul</i></p>
+<p>Vanilla error: No module named &#x27;captum&#x27;</p>
+<p>ABSA error: No module named &#x27;captum&#x27;</p>
+<hr><h2 style='font-family:sans-serif;'>Esempio 7</h2>
+<p style='font-family:sans-serif;'><b>Aspect:</b> <code>Maldini</code></p>
+<p style='font-family:sans-serif;'><i>This is not expected.”*** One measure of Ibrahimovic’s longevity is that he played against Paolo Maldini who was a giant in the Milan defence from 1984 to 2009, when he retired at 41.</i></p>
+<p>Vanilla error: No module named &#x27;captum&#x27;</p>
+<p>ABSA error: No module named &#x27;captum&#x27;</p>
+<hr><h2 style='font-family:sans-serif;'>Esempio 8</h2>
+<p style='font-family:sans-serif;'><b>Aspect:</b> <code>Maldini</code></p>
+<p style='font-family:sans-serif;'><i>Also justtttt to start ibra is responsible as well because he (unlike maldini) is just yes-manning the management.</i></p>
+<p>Vanilla error: No module named &#x27;captum&#x27;</p>
+<p>ABSA error: No module named &#x27;captum&#x27;</p>
+<hr><h2 style='font-family:sans-serif;'>Esempio 9</h2>
+<p style='font-family:sans-serif;'><b>Aspect:</b> <code>Maldini</code></p>
+<p style='font-family:sans-serif;'><i>And Maldini is not a violent man, but Furlani would have probably just crapped his pants and had a heart attack.</i></p>
+<p>Vanilla error: No module named &#x27;captum&#x27;</p>
+<p>ABSA error: No module named &#x27;captum&#x27;</p>
+<hr><h2 style='font-family:sans-serif;'>Esempio 10</h2>
+<p style='font-family:sans-serif;'><b>Aspect:</b> <code>Maldini</code></p>
+<p style='font-family:sans-serif;'><i>massive L by milan should keep him allegri is a good manager whose worked with world class players he would get the old theo easily which is the best LB itw no matter who we bring they wont even have 5% of his talent😂 maldini should have never left biggest mistake we made since thiago silva and ibra left to psg</i></p>
+<p>Vanilla error: No module named &#x27;captum&#x27;</p>
+<p>ABSA error: No module named &#x27;captum&#x27;</p>
+<hr><h2 style='font-family:sans-serif;'>Esempio 11</h2>
+<p style='font-family:sans-serif;'><b>Aspect:</b> <code>Maldini</code></p>
+<p style='font-family:sans-serif;'><i>His mentality is not to the level of Balotelli but he&#x27;s nowhere near Ibrahimovic, Maldini, Seedorf, Gattuso, Nesta, or the other legends of this club.</i></p>
+<p>Vanilla error: No module named &#x27;captum&#x27;</p>
+<p>ABSA error: No module named &#x27;captum&#x27;</p>
+<hr><h2 style='font-family:sans-serif;'>Esempio 12</h2>
+<p style='font-family:sans-serif;'><b>Aspect:</b> <code>Maldini</code></p>
+<p style='font-family:sans-serif;'><i>That’s actually a good thing by the way instead of having 50 clowns making 10 different decisions you have one person making all the decisions solely for the clubs benefit, Maldini knew that , Cardinale use the typical American approach of hiring a bunch of useless managers</i></p>
+<p>Vanilla error: No module named &#x27;captum&#x27;</p>
+<p>ABSA error: No module named &#x27;captum&#x27;</p>
+<hr><h2 style='font-family:sans-serif;'>Esempio 13</h2>
+<p style='font-family:sans-serif;'><b>Aspect:</b> <code>Maldini</code></p>
+<p style='font-family:sans-serif;'><i>another Maldini no brainer</i></p>
+<p>Vanilla error: No module named &#x27;captum&#x27;</p>
+<p>ABSA error: No module named &#x27;captum&#x27;</p>
+<hr><h2 style='font-family:sans-serif;'>Esempio 14</h2>
+<p style='font-family:sans-serif;'><b>Aspect:</b> <code>Maldini</code></p>
+<p style='font-family:sans-serif;'><i>Choosing Maldini is never a disgrace</i></p>
+<p>Vanilla error: No module named &#x27;captum&#x27;</p>
+<p>ABSA error: No module named &#x27;captum&#x27;</p>
+<hr><h2 style='font-family:sans-serif;'>Esempio 15</h2>
+<p style='font-family:sans-serif;'><b>Aspect:</b> <code>Maldini</code></p>
+<p style='font-family:sans-serif;'><i>People will credit Maldini with anything ffs</i></p>
+<p>Vanilla error: No module named &#x27;captum&#x27;</p>
+<p>ABSA error: No module named &#x27;captum&#x27;</p>
+<hr><h2 style='font-family:sans-serif;'>Esempio 16</h2>
+<p style='font-family:sans-serif;'><b>Aspect:</b> <code>Maldini</code></p>
+<p style='font-family:sans-serif;'><i>Sono tutti pazzi questi tuoi amici che dicono che Maldini era fortunato.</i></p>
+<p>Vanilla error: No module named &#x27;captum&#x27;</p>
+<p>ABSA error: No module named &#x27;captum&#x27;</p>
+<hr><h2 style='font-family:sans-serif;'>Esempio 17</h2>
+<p style='font-family:sans-serif;'><b>Aspect:</b> <code>Maldini</code></p>
+<p style='font-family:sans-serif;'><i>Dani Maldini scoring ancora 😭</i></p>
+<p>Vanilla error: No module named &#x27;captum&#x27;</p>
+<p>ABSA error: No module named &#x27;captum&#x27;</p>
+<hr><h2 style='font-family:sans-serif;'>Esempio 18</h2>
+<p style='font-family:sans-serif;'><b>Aspect:</b> <code>Maldini</code></p>
+<p style='font-family:sans-serif;'><i>Maldini is a proper DILF</i></p>
+<p>Vanilla error: No module named &#x27;captum&#x27;</p>
+<p>ABSA error: No module named &#x27;captum&#x27;</p>
+</body></html>

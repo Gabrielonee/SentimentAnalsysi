@@ -19,6 +19,47 @@ except ImportError:
     from src.config import EXEC_BY_KEY, EXECUTIVES
 
 
+# --- Font grandi e in grassetto su TUTTI i grafici Plotly ---------------------
+# Streamlit applica un proprio tema ai grafici Plotly che sovrascrive i font:
+# per questo prima non si vedeva il bold. Qui intercettiamo st.plotly_chart,
+# forziamo theme=None e applichiamo uno stile uniforme a ogni figura, così non
+# serve modificarle una per una.
+# Memorizza l'originale VERO una sola volta: senza questo, a ogni rerun di
+# Streamlit il wrapper avvolgerebbe se stesso (wrapper-su-wrapper) e l'altezza
+# verrebbe moltiplicata di nuovo a ogni interazione -> grafici giganti.
+_orig_plotly_chart = getattr(st, "_orig_plotly_chart_real", st.plotly_chart)
+st._orig_plotly_chart_real = _orig_plotly_chart
+
+def _styled_plotly_chart(fig, *args, **kwargs):
+    try:
+        # Ingrandisce il grafico (~+45% in altezza): con font piu' grandi servono
+        # piu' pixel, altrimenti le label si accavallano.
+        cur_h = getattr(fig.layout, "height", None) or 400
+        fig.update_layout(height=int(cur_h * 1.45))
+        m = fig.layout.margin
+        fig.update_layout(margin=dict(
+            l=max(m.l or 0, 70), r=max(m.r or 0, 40),
+            t=max(m.t or 0, 50), b=max(m.b or 0, 60)))
+        fig.update_layout(
+            font=dict(size=17, color="#111111", weight="bold"),
+            legend=dict(font=dict(size=15, weight="bold")),
+            title=dict(font=dict(size=19, weight="bold")),
+        )
+        fig.update_xaxes(title_font=dict(size=17, weight="bold"),
+                         tickfont=dict(size=14, weight="bold"), automargin=True)
+        fig.update_yaxes(title_font=dict(size=17, weight="bold"),
+                         tickfont=dict(size=14, weight="bold"), automargin=True)
+        # ingrandisce/bolda anche le etichette-testo (nodi grafo, valori barre)
+        fig.update_traces(textfont=dict(size=16, weight="bold"),
+                          selector=dict(type="scatter"))
+    except Exception:
+        pass
+    kwargs.setdefault("theme", None)
+    return _orig_plotly_chart(fig, *args, **kwargs)
+
+st.plotly_chart = _styled_plotly_chart
+
+
 st.set_page_config(
     page_title="Milan Sentiment – Era RedBird",
     page_icon="⚽",
@@ -83,7 +124,7 @@ def load_correlations() -> pd.DataFrame:
 
 df_match = load_matches()
 
-st.sidebar.title("⚽ Milan Sentiment – RedBird era")
+st.sidebar.title("AC Milan Sentiment")
 st.sidebar.caption("Dashboard interattiva di analisi social")
 
 available_backends = _discover_sentiment_files()
@@ -126,7 +167,7 @@ selected_keys = st.sidebar.multiselect(
 lang_filter = st.sidebar.multiselect(
     "Lingua", options=["it", "en"], default=["it", "en"]
 )
-min_score = st.sidebar.slider("Score Reddit minimo", -5, 50, -3, 1)
+min_score = st.sidebar.slider("Score Reddit minimo", 1, 50, 1, 1)
 
 # Filtro globale
 mask = (
@@ -161,6 +202,8 @@ with tab1:
     fig = px.bar(counts, x="menzioni", y="dirigente", orientation="h",
                  color="menzioni", color_continuous_scale=["#000000", MILAN_RED])
     fig.update_layout(height=400, showlegend=False, coloraxis_showscale=False)
+    fig.update_yaxes(title_text=None)
+    fig.update_xaxes(title_text="Numero Menzioni")
     st.plotly_chart(fig, use_container_width=True)
 
     st.subheader("Mix linguistico e label")
@@ -184,22 +227,80 @@ with tab1:
 
 with tab2:
     st.subheader("Sentiment medio mensile per dirigente")
-    df_w = df_sent.copy()
-    df_w["month"] = (pd.to_datetime(df_w["created_utc"]).dt.tz_convert("UTC")
-                       .dt.to_period("M").dt.to_timestamp())
-    monthly = (df_w.groupby(["month", "executive"], as_index=False)
-                   .agg(mean_score=("sentiment_score", "mean"),
-                        n=("sentiment_score", "count")))
-    monthly["dirigente"] = monthly["executive"].map(lambda k: EXEC_BY_KEY[k].display_name)
 
-    fig = px.line(monthly, x="month", y="mean_score", color="dirigente",
-                  line_shape="spline", markers=True,
-                  hover_data={"n": True, "mean_score": ":+.3f"})
-    fig.update_layout(height=450, yaxis_title="Sentiment medio (-1 → +1)", xaxis_title="")
-    fig.add_hline(y=0, line_dash="dot", line_color="#666666")
+    show_average = st.checkbox(
+        "Mostra media complessiva",
+        value=False,
+        key="show_average_sentiment"
+    )
+
+    df_w = df_sent.copy()
+
+    df_w["month"] = (
+        pd.to_datetime(df_w["created_utc"], utc=True)
+        .dt.to_period("M")
+        .dt.to_timestamp()
+    )
+
+    monthly = (
+        df_w.groupby(["month", "executive"], as_index=False)
+        .agg(
+            mean_score=("sentiment_score", "mean"),
+            n=("sentiment_score", "count")
+        )
+    )
+
+    monthly["dirigente"] = monthly["executive"].map(
+        lambda k: EXEC_BY_KEY[k].display_name
+    )
+
+    fig = px.line(
+        monthly,
+        x="month",
+        y="mean_score",
+        color="dirigente",
+        line_shape="spline",
+        markers=True,
+        hover_data={"n": True, "mean_score": ":+.3f"},
+    )
+
+    if show_average:
+        monthly_avg = (
+            df_w.groupby("month", as_index=False)
+            .agg(
+                mean_score=("sentiment_score", "mean"),
+                n=("sentiment_score", "count")
+            )
+        )
+
+        fig.add_scatter(
+            x=monthly_avg["month"],
+            y=monthly_avg["mean_score"],
+            mode="lines+markers",
+            name="Media complessiva",
+            line_color='black',
+            line=dict(width=7)
+        )
+
+    fig.update_layout(
+        height=450,
+        yaxis_title="Sentiment medio",
+        xaxis_title=""
+    )
+
+    fig.add_hline(
+        y=0,
+        line_dash="dot",
+        line_color="#666666"
+    )
+
     st.plotly_chart(fig, use_container_width=True)
-    st.caption("Aggregazione mensile: curve più stabili, picchi attenuati. "
-               "Linea zero = neutralità. Valori positivi = sentiment favorevole.")
+
+    st.caption(
+        "Aggregazione mensile del sentiment. "
+        "La linea tratteggiata rappresenta la media complessiva "
+        "di tutti i dirigenti selezionando l'opzione dedicata."
+    )
 
     st.subheader("Distribuzione del sentiment per dirigente")
     df_box = df_sent.copy()
@@ -232,15 +333,22 @@ with tab2:
             season_end_date = pd.Timestamp(f"{season_start_year + 1}-06-30 23:59:59", tz="UTC")
 
             season_df = df_events[df_events["season"] == season].copy()
-            # pandas 2.x non include più la Series-grouper nel risultato.
-            season_df["_day"] = pd.to_datetime(season_df["created_utc"], utc=True).dt.date
-            df_all = (season_df.groupby("_day", as_index=False)["sentiment_score"]
-                               .mean()
-                               .rename(columns={"_day": "date"})
+            # Aggregazione MENSILE (media del mese) invece che giornaliera.
+            season_df["_month"] = (
+                pd.to_datetime(season_df["created_utc"], utc=True)
+                .dt.to_period("M")
+                .dt.to_timestamp()
+            )
+            df_all = (season_df.groupby("_month", as_index=False)
+                               .agg(sentiment_score=("sentiment_score", "mean"),
+                                    n=("sentiment_score", "count"))
+                               .rename(columns={"_month": "date"})
                                .sort_values("date"))
 
             fig = px.area(df_all, x="date", y="sentiment_score",
-                          color_discrete_sequence=[MILAN_RED])
+                          color_discrete_sequence=[MILAN_RED],
+                          markers=True,
+                          hover_data={"n": True, "sentiment_score": ":+.3f"})
             fig.update_layout(height=320, margin=dict(t=20, b=20))
             fig.add_hline(y=0, line_dash="dot", line_color="#666666")
 
@@ -254,7 +362,7 @@ with tab2:
                         text=label,
                         showarrow=False,
                         textangle=-90,
-                        font=dict(size=10),
+                        font=dict(size=14, weight="bold"),
                     )
 
             fig.update_xaxes(title_text="")
@@ -440,8 +548,10 @@ with tab4:
         matches_sel["form_y"] = matches_sel.groupby("season")["form_rolling"].transform(zscore)
         y1_title = "Sentiment (z-score)"
         y2_title = "Forma (z-score, per stagione)"
-        y1_range = None
-        y2_range = None
+        # Stesso range simmetrico sui due assi -> lo zero coincide (allineamento
+        # visivo coerente con la correlazione calcolata sui valori reali).
+        y1_range = [-3, 3]
+        y2_range = [-3, 3]
     else:
         sent_y_main = weekly_sent["rolling"]
         sent_y_raw  = weekly_sent["mean_score"]
@@ -494,7 +604,7 @@ with tab4:
             fig.add_vline(x=ev, line_dash="dash", line_color="#999999")
             fig.add_annotation(x=ev, y=1, xref="x", yref="paper",
                                text=label, showarrow=False, textangle=-90,
-                               font=dict(size=10, color="#666666"))
+                               font=dict(size=14, color="#444444", weight="bold"))
 
     yaxis_kwargs = dict(title=y1_title, side="left", zeroline=True,
                         zerolinecolor="#888", gridcolor="#F0F0F0")
@@ -590,19 +700,3 @@ with tab4:
                    "Il lag con |r| più alto suggerisce il legame temporale dominante.")
     else:
         st.info("Settimane sovrapposte insufficienti per la heatmap di lag.")
-
-    corr = load_correlations()
-    if not corr.empty:
-        st.subheader("Correlazioni per dirigente")
-        show = corr.copy()
-        show["dirigente"] = show["executive"].map(
-            lambda k: EXEC_BY_KEY[k].display_name if k in EXEC_BY_KEY else k
-        )
-        show = show[["dirigente", "n_weeks", "pearson_r", "pearson_p",
-                     "spearman_r", "spearman_p"]].copy()
-        for col in ("pearson_r", "spearman_r"):
-            show[col] = show[col].round(3)
-        for col in ("pearson_p", "spearman_p"):
-            show[col] = show[col].round(4)
-        st.dataframe(show, use_container_width=True, hide_index=True)
-        st.caption("p-value < 0.05 indica correlazione statisticamente significativa.")

@@ -1,8 +1,8 @@
 executive,label,role,mentions,degree,betweenness,eigenvector,clustering,community
 maldini,Paolo Maldini,Direttore Tecnico,25291,1.0,0.0,0.5358904638630935,0.3100334062335789,1
 ibrahimovic,Zlatan Ibrahimović,Operating Partner / Senior Advisor,21241,1.0,0.2,0.37753503099737584,0.23139456069233202,0
-cardinale,Gerry Cardinale,Founder RedBird Capital / Owner,12752,1.0,0.0,0.3872147464004677,0.2341089640766592,0
+cardinale,Gerry Cardinale,Founder RedBird Capital / Owner,12752,1.0,0.0,0.3872147464004677,0.23410896407665924,0
 furlani,Giorgio Furlani,CEO,8222,1.0,0.0,0.42929846351329065,0.2643328605096826,0
 moncada,Geoffrey Moncada,Direttore Tecnico / Head of Scouting,4580,1.0,0.0,0.34900985507448073,0.22518543365316354,0
 massara,Frederic Massara,Direttore Sportivo,2075,1.0,0.0,0.3266964418296648,0.16354297421002556,1
-gazidis,Ivan Gazidis,CEO uscente,1000,1.0,0.8,0.08670545808819978,0.09906546539751271,1
+gazidis,Ivan Gazidis,CEO uscente,1000,1.0,0.8,0.08670545808819978,0.0990654653975127,1
