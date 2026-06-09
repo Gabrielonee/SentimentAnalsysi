@@ -19,21 +19,11 @@ except ImportError:
     from src.config import EXEC_BY_KEY, EXECUTIVES
 
 
-# --- Font grandi e in grassetto su TUTTI i grafici Plotly ---------------------
-# Streamlit applica un proprio tema ai grafici Plotly che sovrascrive i font:
-# per questo prima non si vedeva il bold. Qui intercettiamo st.plotly_chart,
-# forziamo theme=None e applichiamo uno stile uniforme a ogni figura, così non
-# serve modificarle una per una.
-# Memorizza l'originale VERO una sola volta: senza questo, a ogni rerun di
-# Streamlit il wrapper avvolgerebbe se stesso (wrapper-su-wrapper) e l'altezza
-# verrebbe moltiplicata di nuovo a ogni interazione -> grafici giganti.
 _orig_plotly_chart = getattr(st, "_orig_plotly_chart_real", st.plotly_chart)
 st._orig_plotly_chart_real = _orig_plotly_chart
 
 def _styled_plotly_chart(fig, *args, **kwargs):
     try:
-        # Ingrandisce il grafico (~+45% in altezza): con font piu' grandi servono
-        # piu' pixel, altrimenti le label si accavallano.
         cur_h = getattr(fig.layout, "height", None) or 400
         fig.update_layout(height=int(cur_h * 1.45))
         m = fig.layout.margin
@@ -124,9 +114,7 @@ def load_correlations() -> pd.DataFrame:
 
 df_match = load_matches()
 
-st.sidebar.title("AC Milan Sentiment")
-st.sidebar.caption("Dashboard interattiva di analisi social")
-
+st.sidebar.title("AC Milan Sentiment Analysis")
 available_backends = _discover_sentiment_files()
 if not available_backends:
     st.sidebar.error("Nessun file sentiment trovato in data/.")
@@ -180,11 +168,8 @@ mask = (
 df_sent = df_sent_all[mask].copy()
 
 
-st.title("Sentiment & Network Analysis — AC Milan, era RedBird")
-st.caption("Analisi di r/ACMilan e fonti correlate · 2022 – oggi · IT + EN")
-
-tab1, tab2, tab3, tab4 = st.tabs(["🏠 Overview", "📈 Sentiment", "🕸️ Network", "🏆 Performance"])
-
+st.title("Sentiment & Network Analysis")
+tab1, tab2, tab3, tab4 = st.tabs(["OVERVIEW", "SENTIMENT", "NETWORK", "PERFORMANCE"])
 
 with tab1:
     c1, c2, c3, c4 = st.columns(4)
@@ -296,11 +281,6 @@ with tab2:
 
     st.plotly_chart(fig, use_container_width=True)
 
-    st.caption(
-        "Aggregazione mensile del sentiment. "
-        "La linea tratteggiata rappresenta la media complessiva "
-        "di tutti i dirigenti selezionando l'opzione dedicata."
-    )
 
     st.subheader("Distribuzione del sentiment per dirigente")
     df_box = df_sent.copy()
@@ -480,10 +460,10 @@ with tab3:
         if not metrics.empty:
             st.subheader("Metriche di centralità")
             show = metrics.copy()
-            show["dirigente"] = show["label"]
-            show = show[["dirigente", "role", "mentions", "degree",
-                         "betweenness", "eigenvector", "clustering", "community"]].copy()
-            for col in ("degree", "betweenness", "eigenvector", "clustering"):
+            show["Dirigente"] = show["label"]
+            show = show[["Dirigente", "role", "mentions",
+                         "eigenvector", "clustering", "community"]].copy()
+            for col in ("eigenvector", "clustering"):
                 show[col] = show[col].round(3)
             st.dataframe(show, use_container_width=True, hide_index=True)
 
@@ -548,8 +528,6 @@ with tab4:
         matches_sel["form_y"] = matches_sel.groupby("season")["form_rolling"].transform(zscore)
         y1_title = "Sentiment (z-score)"
         y2_title = "Forma (z-score, per stagione)"
-        # Stesso range simmetrico sui due assi -> lo zero coincide (allineamento
-        # visivo coerente con la correlazione calcolata sui valori reali).
         y1_range = [-3, 3]
         y2_range = [-3, 3]
     else:
@@ -625,7 +603,7 @@ with tab4:
     fig.add_hline(y=0, line_dash="dot", line_color="#888888", yref="y")
     st.plotly_chart(fig, use_container_width=True)
 
-    st.subheader("Correlazione statistica (segnali detrendati)")
+    st.subheader("Correlazione statistica")
     merged = weekly_sent.merge(weekly_form, on="week", how="inner")
     merged = merged.dropna(subset=["rolling", "form"])
     if len(merged) >= 8:
