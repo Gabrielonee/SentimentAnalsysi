@@ -28,8 +28,9 @@ from typing import Sequence
 
 import pandas as pd
 
-from .config import OUTPUT_DIR, SENTIMENT_MODEL
-from .aspect_sentiment import ABSA_MODEL
+from .config import OUTPUT_DIR, SENTIMENT_MODEL, EXEC_BY_KEY
+from .aspect_sentiment import ABSA_MODEL, AspectSentimentAnalyzer
+from .ner import annotate_sentence
 from .sentiment import _auto_device
 
 logger = logging.getLogger(__name__)
@@ -53,6 +54,17 @@ DEFAULT_EXAMPLES = [
      "sentence": "Furlani is doing a great job, the budget is balanced and the team is competitive."},
     {"aspect": "Ibrahimovic",
      "sentence": "Ibra is all talk and nothing else, he doesn't really decide anything in the club."},
+    # --- Casi multi-aspect: 2 dirigenti con polarità opposte (estratti reali da r/ACMilan) ---
+    {"aspect": "Furlani",
+     "sentence": "Furlani really is the Anti-Maldini."},
+    {"aspect": "Ibrahimovic",
+     "sentence": "We gave up Maldini basically for Ibra"},
+    {"aspect": "Moncada",
+     "sentence": "I have faith in Moncada but not in Furlani."},
+    {"aspect": "Maldini",
+     "sentence": "Maldini is 10x the leader Ibra is off the pitch."},
+    {"aspect": "Cardinale",
+     "sentence": "He and cardinale must leave, I want maldini back."},
 ]
 
 
@@ -227,6 +239,23 @@ class ABSAExplainer(_BaseIGExplainer):
                               truncation=True, max_length=self.MAX_LEN)
 
 
+def _targets_for_sentence(sentence: str, fallback_aspect: str = "") -> list[tuple[str, str]]:
+    """Dirigenti citati nella frase, come lista di (display_name, aspect_target).
+
+    Usa la stessa NER del resto della pipeline (`annotate_sentence`) così che il
+    numero di blocchi ABSA coincida con il numero di dirigenti effettivamente
+    menzionati. Se la NER non rileva nessun dirigente si ricade sull'aspect
+    fornito nell'esempio (utile per target generici come "the management")."""
+    targets: list[tuple[str, str]] = []
+    for key in annotate_sentence(sentence):
+        display = EXEC_BY_KEY[key].display_name
+        target = AspectSentimentAnalyzer.normalize_target(key)
+        targets.append((display, target))
+    if not targets and fallback_aspect:
+        targets.append((fallback_aspect, fallback_aspect))
+    return targets
+
+
 def explain_examples(examples: list[dict], out_path: Path,
                      translate_it: bool = False):
     """Calcola attribuzioni per i due modelli e scrive un HTML side-by-side."""
@@ -243,32 +272,48 @@ def explain_examples(examples: list[dict], out_path: Path,
         "spingono la predizione verso <b>positivo</b>; "
         "token <span style='background:rgba(214,39,40,0.6);padding:1px 4px;'>rossi</span> "
         "verso <b>negativo</b>. Intensità del colore proporzionale a |attribuzione|.</p>",
+        "<p style='font-family:sans-serif;color:#555;max-width:800px;'>"
+        "Il modello <b>Vanilla</b> assegna <b>un solo sentiment all'intera frase</b>. "
+        "Il modello <b>ABSA</b> produce invece <b>un blocco per ogni dirigente citato</b> "
+        "(N&nbsp;=&nbsp;numero di dirigenti nella frase): questo mostra come l'ABSA serva "
+        "ad assegnare un sentiment all'<i>aspect</i> specifico, anche quando nella stessa "
+        "frase compaiono più persone con polarità opposte.</p>",
     ]
     for i, ex in enumerate(examples, 1):
         sentence = ex["sentence"]
-        aspect = ex.get("aspect", "")
+        fallback_aspect = ex.get("aspect", "")
+        targets = _targets_for_sentence(sentence, fallback_aspect)
         html_parts.append(f"<hr><h2 style='font-family:sans-serif;'>Esempio {i}</h2>")
-        html_parts.append(f"<p style='font-family:sans-serif;'><b>Aspect:</b> "
-                          f"<code>{html.escape(aspect)}</code></p>")
         html_parts.append(f"<p style='font-family:sans-serif;'>"
                           f"<i>{html.escape(sentence)}</i></p>")
+        detected = ", ".join(html.escape(d) for d, _ in targets) or "—"
+        html_parts.append(f"<p style='font-family:sans-serif;'><b>Dirigenti rilevati "
+                          f"(N={len(targets)}):</b> <code>{detected}</code></p>")
+
+        # --- Vanilla: un solo blocco sull'intera frase ---
         try:
             a_van = van.explain(sentence)
             html_parts.append(render_html_block(
                 "Vanilla (XLM-RoBERTa)",
-                "Sentence-level — attribuzione verso classe predetta",
+                "Sentence-level — un solo sentiment per l'intera frase",
                 a_van))
         except Exception as e:
             html_parts.append(f"<p>Vanilla error: {html.escape(str(e))}</p>")
 
-        try:
-            a_absa = absa.explain(sentence, aspect=aspect)
-            html_parts.append(render_html_block(
-                f"ABSA (DeBERTa-v3) — target = {aspect}",
-                "Target-aware — input: [aspect] [SEP] [sentence]",
-                a_absa))
-        except Exception as e:
-            html_parts.append(f"<p>ABSA error: {html.escape(str(e))}</p>")
+        # --- ABSA: un blocco per ciascun dirigente citato ---
+        if not targets:
+            html_parts.append("<p style='font-family:sans-serif;color:#a00;'>"
+                              "Nessun dirigente rilevato nella frase: ABSA non eseguito.</p>")
+        for display, target in targets:
+            try:
+                a_absa = absa.explain(sentence, aspect=target)
+                html_parts.append(render_html_block(
+                    f"ABSA (DeBERTa-v3) — target = {display}",
+                    f"Target-aware — input: [{target}] [SEP] [sentence]",
+                    a_absa))
+            except Exception as e:
+                html_parts.append(f"<p>ABSA error ({html.escape(display)}): "
+                                  f"{html.escape(str(e))}</p>")
 
     html_parts.append("</body></html>")
     out_path.write_text("\n".join(html_parts), encoding="utf-8")
