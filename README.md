@@ -38,13 +38,13 @@ python -m spacy download en_core_web_sm
 ## Full pipeline (Arctic Shift)
 
 ```bash
-python -m src.scraper                       # collect posts + comments
-python -m src.preprocess                    # clean & normalise
-python -m src.ner                           # attribute mentions to executives
-python -m src.aspect_sentiment              # aspect-based sentiment (ABSA)
-python -m src.network                       # co-mention graph + metrics
-python -m src.results --matches data/matches.csv   # correlation with results
-streamlit run src/dashboard.py              # interactive dashboard
+python -m src.scraper                      
+python -m src.preprocess                    
+python -m src.ner                           
+python -m src.aspect_sentiment              
+python -m src.network                       
+python -m src.results --matches data/matches.csv   
+streamlit run src/dashboard.py             
 ```
 
 Running the pipeline regenerates the datasets under `data/` and the analysis
@@ -127,17 +127,6 @@ fbref/football-data; the expected schema is documented in the docstring of
    communities (greedy modularity), centrality metrics table.
 4. **Performance** — weekly sentiment vs Serie A form, Pearson
    correlation and cross-correlation by temporal lag.
-
-## Limitations and ethical considerations
-
-- Reddit is not representative of the entire Milan fan base; the community is
-  English-speaking and self-selected.
-- Sarcasm and football jargon can degrade sentiment estimates.
-- The NER is dictionary-based and has no coreference resolution, so mentions
-  expressed through pronouns are not attributed.
-- Correlation is not causation: the temporal analysis suggests precedence, not
-  a real causal effect.
-- Reddit usernames are never published in clear text in the reports.
 
 ## License
 
