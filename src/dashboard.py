@@ -294,10 +294,11 @@ with tab2:
 
     st.subheader("Eventi notevoli e shock di sentiment")
     EVENTS_DISPLAY = [
+        ("2022-05-22", "Vittoria Scudetto"),
         ("2023-06-05", "Esonero Maldini & Massara"),
         ("2023-12-28", "Ritorno Ibra Operating Partner"),
         ("2024-10-01", "Intervista Cardinale"),
-        ("2025-05-25", "Fine stagione 24/25"),
+        ("2026-01-25", "NO Mercato"),
     ]
     df_events = df_sent.copy()
     created = pd.to_datetime(df_events["created_utc"], utc=True)
@@ -572,10 +573,11 @@ with tab4:
         ))
     if show_events:
         EVENTS_PERF = [
-            ("2023-06-05", "Esonero Maldini & Massara"),
-            ("2023-12-28", "Ritorno Ibra"),
-            ("2024-10-01", "Intervista Cardinale"),
-            ("2025-05-25", "Fine stagione 24/25"),
+        ("2022-05-22", "Vittoria Scudetto"),
+        ("2023-06-05", "Esonero Maldini & Massara"),
+        ("2023-12-28", "Ritorno Ibra Operating Partner"),
+        ("2024-10-01", "Intervista Cardinale"),
+        ("2026-01-25", "NO Mercato"),
         ]
         for d, label in EVENTS_PERF:
             ev = pd.to_datetime(d, utc=True)

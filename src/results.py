@@ -71,6 +71,64 @@ def correlate(sent_weekly: pd.DataFrame, res_weekly: pd.DataFrame) -> pd.DataFra
     return pd.DataFrame(rows).sort_values("pearson_p")
 
 
+def correlate_robust(sent_weekly: pd.DataFrame, res_weekly: pd.DataFrame,
+                     hac_maxlags: int = 4) -> pd.DataFrame:
+    """Correlazione sentiment-punti corretta per autocorrelazione.
+
+    Il p-value 'naive' di Pearson assume osservazioni indipendenti, ipotesi
+    violata da serie temporali persistenti come sentiment e forma: l'n effettivo
+    è < n e la significatività risulta sovrastimata. Questa funzione riporta,
+    oltre all'r di Pearson, due p-value robusti:
+
+    - p_neff: ricalcolato sull'effective sample size con la correzione AR(1)
+      n_eff = n * (1 - phi_x*phi_y) / (1 + phi_x*phi_y), dove phi sono le
+      autocorrelazioni lag-1 delle due serie;
+    - p_hac:  p-value dello slope di una regressione OLS (punti ~ sentiment)
+      con standard error Newey-West (HAC), robusti ad autocorrelazione.
+    """
+    from scipy.stats import t as student_t
+    import statsmodels.api as sm
+
+    def lag1_autocorr(v: np.ndarray) -> float:
+        v = np.asarray(v, dtype=float)
+        v = v - v.mean()
+        denom = float(np.sum(v * v))
+        return float(np.sum(v[1:] * v[:-1]) / denom) if denom > 0 else 0.0
+
+    rows = []
+    merged_full = res_weekly.merge(sent_weekly, on="week", how="inner")
+    for exec_key, g in merged_full.groupby("executive"):
+        g = g.sort_values("week").dropna(subset=["mean_score", "points"])
+        n = len(g)
+        if n < 8:
+            continue
+        x = g["mean_score"].to_numpy()
+        y = g["points"].to_numpy()
+        r = float(np.corrcoef(x, y)[0, 1])
+
+        # 1) effective sample size (correzione AR(1) su entrambe le serie)
+        phix, phiy = lag1_autocorr(x), lag1_autocorr(y)
+        factor = (1.0 - phix * phiy) / (1.0 + phix * phiy)
+        n_eff = max(3.0, n * factor)
+        if abs(r) < 1.0:
+            t_eff = r * np.sqrt((n_eff - 2.0) / (1.0 - r ** 2))
+            p_neff = float(2.0 * student_t.sf(abs(t_eff), df=n_eff - 2.0))
+        else:
+            p_neff = 0.0
+
+        # 2) Newey-West / HAC sullo slope OLS (points ~ const + sentiment)
+        X = sm.add_constant(x)
+        ols = sm.OLS(y, X).fit(cov_type="HAC", cov_kwds={"maxlags": hac_maxlags})
+        p_hac = float(ols.pvalues[1])
+
+        rows.append({
+            "executive": exec_key, "n": n, "pearson_r": r,
+            "lag1_sentiment": round(phix, 3), "lag1_points": round(phiy, 3),
+            "n_eff": round(n_eff, 1), "p_neff": p_neff, "p_hac": p_hac,
+        })
+    return pd.DataFrame(rows).sort_values("p_hac")
+
+
 def granger_test(sent_weekly: pd.DataFrame, res_weekly: pd.DataFrame,
                  max_lag: int = 4) -> pd.DataFrame:
     """Granger causality: sentiment → punti? e viceversa."""
@@ -125,6 +183,12 @@ def main(sent_path: Path | None = None,
     corr = correlate(sw, rw)
     corr.to_csv(out_dir / "correlations.csv", index=False)
     logger.info("Correlazioni salvate (%d righe)", len(corr))
+
+    corr_robust = correlate_robust(sw, rw)
+    if not corr_robust.empty:
+        corr_robust.to_csv(out_dir / "correlations_robust.csv", index=False)
+        logger.info("Correlazioni robuste (autocorrelazione) salvate (%d righe)",
+                    len(corr_robust))
 
     granger = granger_test(sw, rw)
     if not granger.empty:
