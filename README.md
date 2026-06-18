@@ -1,4 +1,4 @@
-# Sentiment & Network Analysis — AC Milan (RedBird era)
+# Sentiment & Network Analysis
 
 Sentiment and network analysis of AC Milan's executives during the RedBird
 Capital ownership era (August 2022 – present). Data comes from the r/ACMilan
@@ -98,7 +98,6 @@ endpoints (`/api/posts/search` and `/api/comments/search`) that accept the
 calls them with forward pagination over monthly windows, with exponential retry
 and gentle throttling. No API key is needed.
 
-Citable reference:
 *Heitmann, A. (2024). Arctic Shift: a community-maintained Reddit archive.
 GitHub repository, https://github.com/ArthurHeitmann/arctic_shift*
 
