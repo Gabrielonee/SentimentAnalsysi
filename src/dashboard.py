@@ -623,10 +623,6 @@ with tab4:
         st.info("Settimane sovrapposte insufficienti per la correlazione.")
 
     st.subheader("Correlazione a diversi lag temporali")
-    st.caption("Per ogni lag k (settimane), Pearson tra **sentiment(t)** e **forma(t+k)**. "
-               "Lag positivo: il sentiment anticipa la forma (predittivo). "
-               "Lag negativo: il sentiment segue la forma (reattivo). "
-               "Lag 0: associazione contemporanea.")
     if len(merged) >= 12:
         from scipy.stats import pearsonr
         lags = list(range(-8, 9))
@@ -675,7 +671,5 @@ with tab4:
             showlegend=False,
         )
         st.plotly_chart(fig_lag, use_container_width=True)
-        st.caption("Barre con asterisco (*) = correlazione significativa al 5%. "
-                   "Il lag con |r| più alto suggerisce il legame temporale dominante.")
     else:
         st.info("Settimane sovrapposte insufficienti per la heatmap di lag.")
