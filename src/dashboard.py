@@ -52,7 +52,6 @@ st.plotly_chart = _styled_plotly_chart
 
 st.set_page_config(
     page_title="Milan Sentiment – Era RedBird",
-    page_icon="⚽",
     layout="wide",
 )
 
