@@ -151,9 +151,6 @@ selected_keys = st.sidebar.multiselect(
     format_func=lambda k: EXEC_BY_KEY[k].display_name if k in EXEC_BY_KEY else k,
 )
 
-lang_filter = st.sidebar.multiselect(
-    "Lingua", options=["it", "en"], default=["it", "en"]
-)
 min_score = st.sidebar.slider("Score Reddit minimo", 1, 50, 1, 1)
 
 # Filtro globale
@@ -161,7 +158,6 @@ mask = (
     (df_sent_all["date"] >= d_from) &
     (df_sent_all["date"] <= d_to) &
     (df_sent_all["executive"].isin(selected_keys)) &
-    (df_sent_all["lang"].isin(lang_filter)) &
     (df_sent_all["score"] >= min_score)
 )
 df_sent = df_sent_all[mask].copy()
