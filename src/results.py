@@ -13,7 +13,6 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(me
 
 
 def weekly_sentiment(df_sent: pd.DataFrame) -> pd.DataFrame:
-    """Aggregazione settimanale (lunedì) per executive."""
     df = df_sent.copy()
     df["created_utc"] = pd.to_datetime(df["created_utc"], utc=True)
     df["week"] = df["created_utc"].dt.tz_convert("UTC").dt.to_period("W-MON").dt.start_time
@@ -73,19 +72,6 @@ def correlate(sent_weekly: pd.DataFrame, res_weekly: pd.DataFrame) -> pd.DataFra
 
 def correlate_robust(sent_weekly: pd.DataFrame, res_weekly: pd.DataFrame,
                      hac_maxlags: int = 4) -> pd.DataFrame:
-    """Correlazione sentiment-punti corretta per autocorrelazione.
-
-    Il p-value 'naive' di Pearson assume osservazioni indipendenti, ipotesi
-    violata da serie temporali persistenti come sentiment e forma: l'n effettivo
-    è < n e la significatività risulta sovrastimata. Questa funzione riporta,
-    oltre all'r di Pearson, due p-value robusti:
-
-    - p_neff: ricalcolato sull'effective sample size con la correzione AR(1)
-      n_eff = n * (1 - phi_x*phi_y) / (1 + phi_x*phi_y), dove phi sono le
-      autocorrelazioni lag-1 delle due serie;
-    - p_hac:  p-value dello slope di una regressione OLS (punti ~ sentiment)
-      con standard error Newey-West (HAC), robusti ad autocorrelazione.
-    """
     from scipy.stats import t as student_t
     import statsmodels.api as sm
 
@@ -131,7 +117,6 @@ def correlate_robust(sent_weekly: pd.DataFrame, res_weekly: pd.DataFrame,
 
 def granger_test(sent_weekly: pd.DataFrame, res_weekly: pd.DataFrame,
                  max_lag: int = 4) -> pd.DataFrame:
-    """Granger causality: sentiment → punti? e viceversa."""
     try:
         from statsmodels.tsa.stattools import grangercausalitytests
     except ImportError:
