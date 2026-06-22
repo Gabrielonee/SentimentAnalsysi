@@ -19,15 +19,14 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(me
 ARCTIC_BASE = "https://arctic-shift.photon-reddit.com/api"
 POSTS_URL = f"{ARCTIC_BASE}/posts/search"
 COMMENTS_URL = f"{ARCTIC_BASE}/comments/search"
-PAGE_SIZE = 100             # massimo accettato dall'endpoint
-DEFAULT_TIMEOUT = 60        # secondi
-THROTTLE_SECONDS = 0.5      # backoff gentile fra chiamate
+PAGE_SIZE = 100             
+DEFAULT_TIMEOUT = 60        
+THROTTLE_SECONDS = 0.5      
 MAX_RETRIES = 5
 
 
 @dataclass
 class ArcticShiftClient:
-    """Wrapper minimale con retry/backoff esponenziale."""
     user_agent: str = "milan-sentiment-research/0.2 (academic)"
     timeout: int = DEFAULT_TIMEOUT
 
@@ -255,34 +254,3 @@ def main(start: datetime | None = None,
 
 def _parse_date(s: str) -> datetime:
     return datetime.strptime(s, "%Y-%m-%d").replace(tzinfo=timezone.utc)
-
-
-if __name__ == "__main__":
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--start", type=_parse_date, default=None,
-                    help="Data inizio YYYY-MM-DD (default: config.START_DATE)")
-    ap.add_argument("--end", type=_parse_date, default=None,
-                    help="Data fine YYYY-MM-DD (default: oggi)")
-    ap.add_argument("--subreddit", action="append", default=None,
-                    help="Subreddit (ripetibile). Default: config.SUBREDDITS")
-    ap.add_argument("--posts-only", action="store_true",
-                    help="Scarica solo post (no commenti)")
-    ap.add_argument("--comments-only", action="store_true",
-                    help="Scarica solo commenti del subreddit (no post)")
-    ap.add_argument("--from-posts", type=Path, default=None,
-                    help="Parquet di post (es. raw_reddit.parquet): "
-                         "scarica SOLO i commenti relativi a quei post via link_id")
-    ap.add_argument("--max-records", type=int, default=None,
-                    help="Tetto al numero totale di record (debug/smoke test). "
-                         "Sconsigliato per crawl completi: rischia di tagliare prima dei commenti.")
-    ap.add_argument("--out", type=Path, default=None)
-    args = ap.parse_args()
-    if args.posts_only and args.comments_only:
-        ap.error("--posts-only e --comments-only sono mutuamente esclusivi")
-    main(start=args.start, end=args.end,
-         subreddits=args.subreddit,
-         include_posts=not args.comments_only,
-         include_comments=not args.posts_only,
-         from_posts=args.from_posts,
-         max_records=args.max_records,
-         out_path=args.out)

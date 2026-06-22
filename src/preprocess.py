@@ -48,7 +48,6 @@ def detect_lang(text: str) -> str:
 
 
 def preprocess_dataframe(df: pd.DataFrame) -> pd.DataFrame:
-    """Applica pulizia + language detection. Filtra IT/EN."""
     df = df.copy()
     df["full_text"] = (df["title"].fillna("") + " " + df["body"].fillna("")).str.strip()
     tqdm.pandas(desc="cleaning")

@@ -9,8 +9,8 @@ OUTPUT_DIR = PROJECT_ROOT / "output"
 DATA_DIR.mkdir(exist_ok=True)
 OUTPUT_DIR.mkdir(exist_ok=True)
 
-SUBREDDITS = ["ACMilan"]            # subreddit target
-START_DATE = datetime(2022, 8, 1, tzinfo=timezone.utc)   # acquisizione RedBird
+SUBREDDITS = ["ACMilan"]           
+START_DATE = datetime(2022, 8, 1, tzinfo=timezone.utc) 
 END_DATE   = datetime.now(tz=timezone.utc)
 
 SENTIMENT_MODEL = "cardiffnlp/twitter-xlm-roberta-base-sentiment"
@@ -19,8 +19,8 @@ SPACY_EN = "en_core_web_sm"
 
 @dataclass
 class Executive:
-    key: str                       # identificatore breve usato in dataframe e grafo
-    display_name: str              # nome esteso per dashboard
+    key: str                      
+    display_name: str             
     role: str
     period: tuple[str, str | None]
     aliases: list[str] = field(default_factory=list)
@@ -49,7 +49,7 @@ EXECUTIVES: list[Executive] = [
         role="Direttore Tecnico",
         period=("2022-08", "2023-06"),
         aliases=["Paolo Maldini", "Maldini", "Paolo",
-                 "Maldini Sr"],   # nota: disambiguare da Daniel/Cesare
+                 "Maldini Sr"],  
     ),
     Executive(
         key="massara",

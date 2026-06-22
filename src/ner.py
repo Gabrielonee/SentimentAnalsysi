@@ -12,7 +12,6 @@ from .config import DATA_DIR, EXECUTIVES
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
-# Split frasi semplice (no spaCy per evitare dipendenza pesante in dev)
 SENTENCE_SPLIT = re.compile(r"(?<=[\.!?])\s+(?=[A-ZÀ-Ý\"'])")
 
 

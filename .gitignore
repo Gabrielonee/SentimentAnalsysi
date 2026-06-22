@@ -1,4 +1,4 @@
-# Python
+
 __pycache__/
 *.py[cod]
 *.egg-info/
@@ -6,17 +6,17 @@ __pycache__/
 venv/
 .env
 
-# OS
+
 .DS_Store
 Thumbs.db
 
-# Dati grezzi (mantieni dati derivati piccoli, escludi i grezzi)
+
 data/raw_reddit.parquet
 data/clean_text.parquet
 
-# Output di sviluppo
+
 .ipynb_checkpoints/
 *.log
+.html
 
-# Dataset (troppo grandi per GitHub: rigenerabili dalla pipeline)
 data/*.parquet

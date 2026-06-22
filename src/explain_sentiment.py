@@ -1,23 +1,3 @@
-"""
-Explainability dei modelli di sentiment con Integrated Gradients.
-
-Calcola attribuzioni token-level per i due backend:
-- vanilla:  XLM-RoBERTa Twitter (sentence-level)
-- ABSA:     DeBERTa-v3-base-ABSA (target-aware con coppia aspect+sentence)
-
-Per ciascuna frase produce un HTML con token colorati: rosso = il token spinge
-verso negativo, blu = spinge verso positivo. Intensità ∝ |attribuzione|.
-
-Uso:
-    # Frasi di default (case study Maldini)
-    python -m src.explain_sentiment
-
-    # Frase singola
-    python -m src.explain_sentiment --text "Zlatan is not Maldini" --aspect Maldini
-
-    # Da CSV (colonne: sentence, aspect, [doc_id])
-    python -m src.explain_sentiment --input data/showcase_examples.csv
-"""
 from __future__ import annotations
 import argparse
 import html
@@ -118,9 +98,6 @@ def render_html_block(title: str, subtitle: str, attr: Attribution) -> str:
 
 
 class _BaseIGExplainer:
-    """Wrapper minimale Integrated Gradients su un modello HF.
-    Le sottoclassi differiscono per come costruiscono l'input (singolo testo
-    vs coppia aspect+sentence)."""
     LABELS = LABELS_VAN
     MAX_LEN = 256
     STEPS = 32
@@ -169,13 +146,6 @@ class _BaseIGExplainer:
         raise NotImplementedError
 
     def explain(self, *args, target: str | None = None, **kwargs) -> Attribution:
-        """Integrated Gradients in PyTorch puro (nessuna dipendenza da captum).
-
-        Interpola le word-embedding dal baseline (token PAD) all'input reale,
-        accumula i gradienti della probabilità della classe target e calcola
-        IG = (emb_input - emb_baseline) * grad_medio, sommato sull'embedding dim
-        per ottenere un'attribuzione per token.
-        """
         import torch
 
         inputs = self._build_inputs(*args, **kwargs)

@@ -21,7 +21,6 @@ def build_cooccurrence_graph(df_mentions: pd.DataFrame) -> nx.Graph:
     node_counter: Counter[str] = Counter()
     for execs in df_mentions["executives"]:
         if isinstance(execs, str):
-            # Riga proveniente da parquet 'long': comportarsi di conseguenza
             continue
         execs = sorted(set(execs))
         for e in execs:
@@ -53,8 +52,6 @@ def compute_metrics(G: nx.Graph) -> pd.DataFrame:
     except nx.PowerIterationFailedConvergence:
         eig = {n: 0.0 for n in G.nodes}
     clu  = nx.clustering(G, weight="weight")
-
-    # Community detection con greedy modularity (no dipendenze esterne)
     communities = list(nx.community.greedy_modularity_communities(G, weight="weight"))
     comm_map = {n: i for i, comm in enumerate(communities) for n in comm}
 
