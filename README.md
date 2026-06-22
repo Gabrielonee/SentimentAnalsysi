@@ -91,13 +91,7 @@ contribution (blue toward positive, red toward negative).
 
 ## Data source: Arctic Shift
 
-[Arctic Shift](https://arctic-shift.photon-reddit.com/) is a
-community-maintained successor to Pushshift. It exposes two public REST
-endpoints (`/api/posts/search` and `/api/comments/search`) that accept the
-`subreddit`, `after`, `before`, `limit`, and `sort` parameters. The scraper
-calls them with forward pagination over monthly windows, with exponential retry
-and gentle throttling. No API key is needed.
-
+[Arctic Shift](https://arctic-shift.photon-reddit.com/) 
 *Heitmann, A. (2024). Arctic Shift: a community-maintained Reddit archive.
 GitHub repository, https://github.com/ArthurHeitmann/arctic_shift*
 
